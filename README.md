@@ -4,9 +4,10 @@ Goal: A marketplace for vendors to sell their products and for customers to buy 
 
 ## Tech Stack
 
-- Frontend: React
-- Backend: Node.js
-- Database: PostgreSQL
+- Frontend: React + TypeScript + Vite
+- Backend: Node.js + Express
+- Database: Supabase (PostgreSQL)
 - Payment Processing: Stripe
 - Hosting: Vercel
-- UI Framework: Tailwind CSS
+- UI Framework: shadcn/ui + Tailwind CSS
+- ORM: Prisma
