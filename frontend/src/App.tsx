@@ -1,11 +1,13 @@
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useUserStore } from "./lib/userStore";
+import type { UserState } from "./lib/userStore";
 import { auth } from "./lib/firebase";
 import { GoogleAuthProvider, signInWithPopup, signOut } from "firebase/auth";
-import type { User } from "firebase/auth";
 
 function App() {
-  const [user, setUser] = useState<User | null>(null);
+  const user = useUserStore((state: UserState) => state.user);
+  const setUser = useUserStore((state: UserState) => state.setUser);
+  const logout = useUserStore((state: UserState) => state.logout);
 
   const handleGoogleLogin = async () => {
     const provider = new GoogleAuthProvider();
@@ -21,7 +23,12 @@ function App() {
         },
       });
 
-      setUser(result.user);
+      setUser({
+        uid: result.user.uid,
+        email: result.user.email!,
+        displayName: result.user.displayName,
+        photoURL: result.user.photoURL,
+      });
     } catch (error) {
       console.error(error);
     }
@@ -30,7 +37,7 @@ function App() {
   const handleLogout = async () => {
     try {
       await signOut(auth);
-      setUser(null);
+      logout();
     } catch (error) {
       console.error(error);
     }
