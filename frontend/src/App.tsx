@@ -1,13 +1,24 @@
+import React from "react";
 import { Button } from "@/components/ui/button";
 import { useUserStore } from "./lib/userStore";
 import type { UserState } from "./lib/userStore";
 import { auth } from "./lib/firebase";
 import { GoogleAuthProvider, signInWithPopup, signOut } from "firebase/auth";
+import { SellerDashboard } from "./components/SellerDashboard";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Link,
+  useNavigate,
+  Navigate,
+} from "react-router-dom";
 
-function App() {
+function Home() {
   const user = useUserStore((state: UserState) => state.user);
   const setUser = useUserStore((state: UserState) => state.setUser);
   const logout = useUserStore((state: UserState) => state.logout);
+  const navigate = useNavigate();
 
   const handleGoogleLogin = async () => {
     const provider = new GoogleAuthProvider();
@@ -38,6 +49,7 @@ function App() {
     try {
       await signOut(auth);
       logout();
+      navigate("/");
     } catch (error) {
       console.error(error);
     }
@@ -81,9 +93,11 @@ function App() {
             <Button size="lg" className="text-lg px-8 py-3">
               Start Shopping
             </Button>
-            <Button variant="outline" size="lg" className="text-lg px-8 py-3">
-              Sell Your Memes
-            </Button>
+            <Link to="/seller-dashboard">
+              <Button variant="outline" size="lg" className="text-lg px-8 py-3">
+                Sell Your Memes
+              </Button>
+            </Link>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
@@ -112,6 +126,32 @@ function App() {
         </div>
       </div>
     </div>
+  );
+}
+
+function ProtectedRoute({ children }: { children: React.ReactElement }) {
+  const user = useUserStore((state: UserState) => state.user);
+  if (!user) {
+    return <Navigate to="/" replace />;
+  }
+  return children;
+}
+
+function App() {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route
+          path="/seller-dashboard"
+          element={
+            <ProtectedRoute>
+              <SellerDashboard />
+            </ProtectedRoute>
+          }
+        />
+      </Routes>
+    </Router>
   );
 }
 
