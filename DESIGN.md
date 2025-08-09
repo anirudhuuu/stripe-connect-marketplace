@@ -1,5 +1,19 @@
 # Stripe Marketplace POC - Design Document
 
+## Table of Contents
+
+1. [System Architecture](#system-architecture)
+2. [Database Schema](#database-schema)
+3. [API Contracts](#api-contracts)
+4. [Stripe Integration](#stripe-integration)
+5. [Authentication & Security](#authentication--security)
+6. [Error Handling](#error-handling)
+7. [POC Essentials & Error Handling](#poc-essentials--error-handling)
+8. [Development & Setup](#development--setup)
+9. [Docker Configuration](#docker-configuration)
+10. [Testing Strategy (POC)](#testing-strategy-poc)
+11. [Monitoring & Logging](#monitoring--logging)
+
 ## System Architecture
 
 ### Overview
@@ -8,10 +22,10 @@ The marketplace follows a modern web application architecture with:
 
 - **Frontend**: React SPA with shadcn/ui components
 - **Backend**: Node.js/Express REST API
-- **Database**: PostgreSQL (NeonDB) with Prisma ORM
+- **Database**: PostgreSQL with Prisma ORM
 - **Auth**: Firebase Auth with Google Sign-In
 - **Payments**: Stripe Connect Express + Stripe Checkout
-- **Development**: Local development environment
+- **Development**: Docker-based development environment
 
 ### Architecture Diagram
 
@@ -55,6 +69,8 @@ The marketplace follows a modern web application architecture with:
 ## Database Schema
 
 ### Core Tables
+
+The database consists of the following core entities:
 
 ### Critical Indexes (POC Performance)
 
@@ -427,6 +443,8 @@ GET    /api/admin/payouts
 - **Connection Pooling**: Simple connection management
 - **Basic Constraints**: NOT NULL, basic data validation
 - **Transaction Boundaries**: Simple transaction handling for critical operations
+- **Data Integrity**: Foreign key constraints and unique constraints
+- **Migration Strategy**: Prisma migrations with rollback capability
 
 ## Development & Setup
 
@@ -557,6 +575,9 @@ services:
 
 volumes:
   postgres_data:
+```
+
+## Docker Configuration
 
 ### Dockerfile Examples
 
@@ -583,7 +604,21 @@ COPY . .
 EXPOSE 5000
 CMD ["npm", "run", "dev"]
 ```
-```
+
+## Testing Strategy (POC)
+
+### Basic Testing
+
+- **API Testing**: Postman/Insomnia collections for endpoint testing
+- **Database Testing**: Prisma Studio for data validation
+- **Stripe Testing**: Test mode with webhook forwarding
+- **Frontend Testing**: Manual testing with browser dev tools
+
+### Test Data
+
+- **Seed Data**: Sample users, sellers, spaces, and offerings
+- **Test Accounts**: Stripe test accounts for payment testing
+- **Mock Data**: Firebase auth emulator for development
 
 ## Monitoring & Logging
 
@@ -600,3 +635,4 @@ CMD ["npm", "run", "dev"]
 - Revenue calculations
 - Seller performance metrics
 - User engagement analytics
+```
